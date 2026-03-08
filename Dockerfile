@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
-COPY requirements.txt .
+# Copy requirements and install dependencies first (for better layer caching)
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Explicitly copy backend directory
-COPY backend/ /app/backend/
+# Copy the entire project (dockerignore handles exclusions)
+COPY . .
 
 # Set working directory
 WORKDIR /app/backend/app

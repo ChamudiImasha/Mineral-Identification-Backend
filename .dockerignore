@@ -32,24 +32,22 @@ backend/app/output/
 
 # Documentation
 *.md
+!backend/app/*.md
 
 # Build artifacts
 build/
 dist/
 
-# Test files (but NOT run.py!)
+# Test files
 test_*.py
 *_test.py
-test*.json
+backend/app/test_*.py
+backend/app/*_test.py
 
 # Config files not needed
 railway.json
 render.yaml
 nixpacks.toml
-
-# Scripts (except backend/app/start.sh)
-build.sh
-test-docker-build.ps1
 
 # Misc
 .DS_Store
