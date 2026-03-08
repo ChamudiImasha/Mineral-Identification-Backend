@@ -14,7 +14,7 @@ Write-Host "✓ Docker found" -ForegroundColor Green
 # Check required files
 $requiredFiles = @(
     "Dockerfile",
-    "requirements-railway.txt",
+    "backend/app/requirements_api.txt",
     "backend/app/api_server.py"
 )
 
@@ -29,7 +29,8 @@ foreach ($file in $requiredFiles) {
 
 Write-Host ""
 Write-Host "Building Docker image..." -ForegroundColor Cyan
-Write-Host "This may take 3-5 minutes..." -ForegroundColor Yellow
+Write-Host "This will download CPU-only PyTorch (~300MB) + other deps" -ForegroundColor Yellow
+Write-Host "Build time: 3-5 minutes on first run" -ForegroundColor Yellow
 Write-Host ""
 
 # Build the image
@@ -43,6 +44,8 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "  docker run -p 8000:8000 -e PORT=8000 mineral-api-test" -ForegroundColor White
     Write-Host ""
     Write-Host "Then visit: http://localhost:8000/docs" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Note: Model will download on first request (~30 seconds)" -ForegroundColor Yellow
 } else {
     Write-Host ""
     Write-Host "✗ Build failed!" -ForegroundColor Red

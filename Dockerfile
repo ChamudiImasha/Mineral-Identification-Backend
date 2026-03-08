@@ -8,14 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (better caching)
-COPY requirements-railway.txt .
-
-# Install Python dependencies with no cache to reduce image size
-RUN pip install --no-cache-dir -r requirements-railway.txt
-
-# Copy entire project
+# Copy entire project first
 COPY . .
+
+# Install Python dependencies from backend/app directory
+RUN pip install --no-cache-dir -r backend/app/requirements_api.txt
 
 # Set working directory to app location
 WORKDIR /app/backend/app

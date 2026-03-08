@@ -1,24 +1,29 @@
+# Optimized API requirements for Railway/Render deployment
+# Using CPU-only PyTorch to reduce Docker image size from 2GB to ~850MB
+
 # API Server Dependencies
 fastapi>=0.100.0
 uvicorn[standard]>=0.23.0
 python-multipart>=0.0.6
+requests>=2.31.0
 
 # Model Download
 gdown>=4.6.0
 
-# Core ML Dependencies
-torch>=2.0.0
-torchvision>=0.15.0
-numpy>=1.24.0
-Pillow>=9.0.0
+# Core ML Dependencies - CPU ONLY (much smaller than GPU version)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.0+cpu
+torchvision==0.15.0+cpu
 
 # CLIP for planetary image gatekeeper
 open-clip-torch>=2.20.0
 
-# Computer Vision
-opencv-python>=4.8.0
+# Computer Vision - headless version (no GUI dependencies, smaller)
+opencv-python-headless>=4.8.0
 
 # Scientific Computing
+numpy>=1.24.0
+Pillow>=9.0.0
 scipy>=1.10.0
 matplotlib>=3.6.0
 
