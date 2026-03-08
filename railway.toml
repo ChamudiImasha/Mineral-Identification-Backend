@@ -1,8 +1,8 @@
 [build]
 builder = "nixpacks"
-buildCommand = "pip install -r requirements.txt"
+buildCommand = "chmod +x build.sh && ./build.sh"
 
 [deploy]
-startCommand = "uvicorn api_server:app --host 0.0.0.0 --port $PORT"
+startCommand = "chmod +x start.sh && ./start.sh"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10

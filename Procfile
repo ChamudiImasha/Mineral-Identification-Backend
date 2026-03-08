@@ -1,1 +1,1 @@
-web: cd backend/app && uvicorn api_server:app --host 0.0.0.0 --port $PORT
+web: chmod +x start.sh && ./start.sh
