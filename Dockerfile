@@ -14,15 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy everything
 COPY . .
 
-# Copy and make entrypoint executable
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Set working directory
 WORKDIR /app/backend/app
 
 # Expose port
 EXPOSE 8000
 
-# Use entrypoint script
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Start server - shell form automatically uses /bin/sh to expand variables
+CMD uvicorn api_server:app --host 0.0.0.0 --port ${PORT:-8000}
