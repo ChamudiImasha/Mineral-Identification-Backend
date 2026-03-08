@@ -37,16 +37,15 @@ backend/app/output/
 build/
 dist/
 
-# Test files
-test*.py
+# Test files (but NOT run.py!)
+test_*.py
 *_test.py
+test*.json
 
 # Config files not needed
-railway.toml
 railway.json
 render.yaml
 nixpacks.toml
-Procfile
 
 # Scripts (except backend/app/start.sh)
 build.sh
