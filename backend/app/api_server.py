@@ -164,8 +164,8 @@ class PredictionResponse(BaseModel):
 
 
 def initialize_model():
-    """Load model and gatekeeper once at server startup."""
-    global MODEL, GATEKEEPER
+    """Load main model at server startup."""
+    global MODEL
     try:
         # Download model if it doesn't exist
         model_path = Path(config.MODEL_SAVE_PATH)
@@ -178,14 +178,20 @@ def initialize_model():
         MODEL = load_trained_model()
         logger.info("✅ Model loaded successfully")
         
-        # Load planetary gatekeeper with permissive threshold
-        GATEKEEPER = load_gatekeeper(threshold=0.45)
-        logger.info("✅ Planetary gatekeeper loaded (threshold=0.45)")
-        
         return True
     except Exception as e:
-        logger.error(f"❌ Failed to load model/gatekeeper: {e}")
+        logger.error(f"❌ Failed to load model: {e}")
         return False
+
+
+def get_gatekeeper():
+    """Load gatekeeper lazily on first use."""
+    global GATEKEEPER
+    if GATEKEEPER is None:
+        logger.info("🔄 Loading planetary gatekeeper (first use)...")
+        GATEKEEPER = load_gatekeeper(threshold=0.45)
+        logger.info("✅ Planetary gatekeeper loaded (threshold=0.45)")
+    return GATEKEEPER
 
 
 def get_mineral_bounding_boxes(prediction, min_area=100):
@@ -329,9 +335,10 @@ async def predict(
         original_size = original_np.shape[:2]
         
         # Stage 1: Planetary Gatekeeper - reject non-planetary images
-        if GATEKEEPER is not None:
+        try:
+            gatekeeper = get_gatekeeper()
             logger.info("🔍 Running planetary gatekeeper check...")
-            gatekeeper_result = GATEKEEPER.check_image(pil_image, return_scores=True)
+            gatekeeper_result = gatekeeper.check_image(pil_image, return_scores=True)
             
             if not gatekeeper_result["accepted"]:
                 logger.warning(f"❌ Image rejected by gatekeeper: {gatekeeper_result['reason']}")
@@ -346,6 +353,9 @@ async def predict(
                 )
             
             logger.info(f"✅ Gatekeeper passed (confidence: {gatekeeper_result['confidence']:.3f})")
+        except Exception as e:
+            logger.warning(f"⚠️ Gatekeeper check failed, proceeding anyway: {e}")
+            # Continue with inference even if gatekeeper fails
         
         # Save temporarily
         temp_path = f'temp_upload_{image.filename}'
