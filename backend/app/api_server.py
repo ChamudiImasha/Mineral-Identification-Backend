@@ -167,6 +167,14 @@ def initialize_model():
     """Load model and gatekeeper once at server startup."""
     global MODEL, GATEKEEPER
     try:
+        # Download model if it doesn't exist
+        model_path = Path(config.MODEL_SAVE_PATH)
+        if not model_path.exists():
+            logger.info("📥 Model not found, downloading from Google Drive...")
+            from download_model import download_model
+            if not download_model():
+                raise Exception("Failed to download model")
+        
         MODEL = load_trained_model()
         logger.info("✅ Model loaded successfully")
         

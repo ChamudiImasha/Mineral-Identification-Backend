@@ -2,7 +2,7 @@
 nixPkgs = ["python310"]
 
 [phases.install]
-cmds = ["chmod +x build.sh", "./build.sh"]
+cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "chmod +x start.sh && ./start.sh"
+cmd = "cd backend/app && python -m uvicorn api_server:app --host 0.0.0.0 --port $PORT"
