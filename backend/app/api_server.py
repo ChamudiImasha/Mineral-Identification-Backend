@@ -448,18 +448,23 @@ async def predict(
 
 def main():
     """Start the API server."""
+    import os
+    
+    # Get port from environment variable (for Railway/cloud deployment)
+    port = int(os.environ.get("PORT", 8000))
+    
     logger.info("=" * 70)
     logger.info("CRISM Mineral Classification API Server (FastAPI)")
     logger.info("=" * 70)
-    logger.info("🌐 Starting server...")
-    logger.info("📍 API URL: http://localhost:8000")
-    logger.info("📖 Interactive Docs: http://localhost:8000/docs")
-    logger.info("📖 ReDoc: http://localhost:8000/redoc")
+    logger.info(f"🌐 Starting server on port {port}...")
+    logger.info(f"📍 API URL: http://0.0.0.0:{port}")
+    logger.info("📖 Interactive Docs: /docs")
+    logger.info("📖 ReDoc: /redoc")
     logger.info("Press Ctrl+C to stop the server")
     logger.info("=" * 70)
     
     # Start server
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
 
 
 if __name__ == '__main__':
