@@ -54,9 +54,9 @@ def evaluate_model_performance(model: torch.nn.Module,
             # Get predictions
             predictions = torch.argmax(outputs, dim=1)
             
-            # Flatten and collect results (using np.array for CPU compatibility)
-            all_predictions.extend(np.array(predictions.cpu()).flatten())
-            all_targets.extend(np.array(targets.cpu()).flatten())
+            # Flatten and collect results (using tolist for CPU compatibility)
+            all_predictions.extend(predictions.detach().cpu().tolist())
+            all_targets.extend(targets.detach().cpu().tolist())
     
     # Convert to numpy arrays
     all_predictions = np.array(all_predictions)
@@ -183,11 +183,11 @@ def visualize_inference_results(model: torch.nn.Module,
                 
                 # Get current sample
                 img = data[i].cpu()  # Shape: (C, H, W)
-                gt_mask = np.array(targets[i].cpu())  # Shape: (H, W)
-                pred_mask = np.array(predictions[i].cpu())  # Shape: (H, W)
+                gt_mask = np.array(targets[i].detach().cpu().tolist())  # Shape: (H, W)
+                pred_mask = np.array(predictions[i].detach().cpu().tolist())  # Shape: (H, W)
                 
                 # Create RGB composite for visualization (use first 3 bands)
-                rgb_img = np.array(img[:3].permute(1, 2, 0))  # (H, W, 3)
+                rgb_img = np.array(img[:3].permute(1, 2, 0).detach().cpu().tolist())  # (H, W, 3)
                 rgb_img = np.clip((rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min()), 0, 1)
                 
                 # Create visualization

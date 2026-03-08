@@ -204,8 +204,8 @@ class PlanetaryGatekeeper:
                 "planetary_max": max_planetary,
                 "non_planetary_avg": non_planetary_score,
                 "non_planetary_max": max_non_planetary,
-                "individual_planetary": np.array(planetary_similarities.cpu()).tolist(),
-                "individual_non_planetary": np.array(non_planetary_similarities.cpu()).tolist(),
+                "individual_planetary": planetary_similarities.detach().cpu().tolist(),
+                "individual_non_planetary": non_planetary_similarities.detach().cpu().tolist(),
             }
         
         return result

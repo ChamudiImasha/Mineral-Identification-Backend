@@ -9,8 +9,8 @@ torchvision==0.15.0+cpu
 # CLIP for planetary image gatekeeper
 open-clip-torch>=2.20.0
 
-# Scientific Computing
-numpy>=1.24.0
+# Scientific Computing - pin numpy version for PyTorch CPU compatibility
+numpy==1.24.3
 scipy>=1.10.0
 
 # Data Handling
