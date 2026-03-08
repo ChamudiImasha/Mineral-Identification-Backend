@@ -20,5 +20,5 @@ WORKDIR /app/backend/app
 # Expose port
 EXPOSE 8000
 
-# Start server - shell form automatically uses /bin/sh to expand variables
-CMD uvicorn api_server:app --host 0.0.0.0 --port ${PORT:-8000}
+# Start server using Python script that reads PORT env var
+CMD ["python", "run.py"]
