@@ -14,15 +14,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Explicitly copy backend directory
 COPY backend/ /app/backend/
 
-# Debug: Verify files copied
-RUN echo "=== Verifying backend directory ===" && \
-    ls -la /app/backend/app/*.py | head -10
-
 # Set working directory
 WORKDIR /app/backend/app
 
-# Expose port
+# Expose port (dynamic from Railway)
 EXPOSE 8000
 
-# Start server
-CMD ["python", "api_server.py"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout=5)" || exit 1
+
+# Start server using run.py with Gunicorn
+CMD ["python", "run.py"]
