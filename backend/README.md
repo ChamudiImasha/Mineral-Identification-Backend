@@ -30,7 +30,6 @@ Backend API server for AI-powered CRISM hyperspectral mineral analysis using U-N
    ```
 
 3. **Activate the virtual environment:**
-
    - **Windows:**
      ```bash
      venv\Scripts\activate
@@ -41,12 +40,23 @@ Backend API server for AI-powered CRISM hyperspectral mineral analysis using U-N
      ```
 
 4. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
    pip install -r requirements_api.txt
    ```
 
+5. **Download the pre-trained model:**
+
+   ```bash
+   python download_model.py
+   ```
+
+   This will automatically download the model from Google Drive to the `saved_models/` directory.
+
 ## Running the Server
+
+### Local Development
 
 ### Start the API Server
 
@@ -62,6 +72,16 @@ Open your browser and navigate to:
 
 - API Documentation: `http://localhost:8000/docs`
 - Health Check: `http://localhost:8000/health`
+
+### Production Deployment
+
+For deploying to Render or other cloud platforms, see [DEPLOYMENT.md](../DEPLOYMENT.md) in the project root.
+
+The deployment process automatically:
+
+- Downloads the pre-trained model from Google Drive
+- Installs all dependencies
+- Starts the production server
 
 ## API Endpoints
 
@@ -129,11 +149,21 @@ backend/
 
 ### Model not found error
 
-Make sure the model file exists at:
+**For local development:**
 
-```
-backend/app/saved_models/best_unet_model.pth
-```
+1. Download the model using the automated script:
+
+   ```bash
+   python download_model.py
+   ```
+
+2. Or manually download from [Google Drive](https://drive.google.com/file/d/1C3mtxAMuUW4JUA8uDy-hHr1_dAaS-crz/view) and place it at:
+   ```
+   backend/app/saved_models/best_unet_model.pth
+   ```
+
+**For production deployment:**
+The model is automatically downloaded during the build process on Render.
 
 ### Port already in use
 

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: mineral-identification-api
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "cd backend/app && chmod +x build.sh && ./build.sh"
+    startCommand: "cd backend/app && uvicorn api_server:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: PORT
+        value: 8000
