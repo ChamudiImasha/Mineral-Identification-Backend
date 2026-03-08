@@ -3,6 +3,9 @@
 torch>=2.0.0
 torchvision>=0.15.0
 
+# CLIP for planetary image gatekeeper
+open-clip-torch>=2.20.0
+
 # Scientific Computing
 numpy>=1.24.0
 scipy>=1.10.0
