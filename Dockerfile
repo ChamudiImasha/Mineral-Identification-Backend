@@ -11,13 +11,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy everything
-COPY . .
+# Explicitly copy backend directory
+COPY backend/ /app/backend/
 
-# Debug: List what was actually copied
-RUN echo "=== Contents of /app ===" && ls -la /app && \
-    echo "=== Contents of /app/backend ===" && ls -la /app/backend || echo "backend not found" && \
-    echo "=== Contents of /app/backend/app ===" && ls -la /app/backend/app || echo "backend/app not found"
+# Debug: Verify files copied
+RUN echo "=== Verifying backend directory ===" && \
+    ls -la /app/backend/app/*.py | head -10
 
 # Set working directory
 WORKDIR /app/backend/app
@@ -25,5 +24,5 @@ WORKDIR /app/backend/app
 # Expose port
 EXPOSE 8000
 
-# Start server using existing api_server.py main function
+# Start server
 CMD ["python", "api_server.py"]
