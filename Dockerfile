@@ -14,8 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy everything
 COPY . .
 
-# Make start script executable
-RUN chmod +x backend/app/start.sh
+# Copy and make entrypoint executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set working directory
 WORKDIR /app/backend/app
@@ -23,5 +24,5 @@ WORKDIR /app/backend/app
 # Expose port
 EXPOSE 8000
 
-# Start server using script
-CMD ["./start.sh"]
+# Use entrypoint script
+ENTRYPOINT ["docker-entrypoint.sh"]
