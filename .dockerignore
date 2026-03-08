@@ -1,7 +1,3 @@
-# Ignore large model files during build
-backend/app/saved_models/*.pth
-*.pth
-
 # Python cache
 __pycache__/
 *.pyc
@@ -11,22 +7,40 @@ __pycache__/
 *.so
 *.egg
 *.egg-info/
+.pytest_cache/
 
-# Development
-.git/
-.gitignore
-.vscode/
-.idea/
-*.md
-!README.md
+# Model files (downloaded at runtime)
+backend/app/saved_models/*.pth
+backend/app/saved_models/best_unet_model.pth
+*.pth
 
-# Data files
-backend/app/data/
+# Data files (not needed in production)
+backend/app/data/raw/
+backend/app/data/processed/
 backend/app/output/
 *.mat
 *.h5
 *.hdf5
 
+# Development
+.git/
+.github/
+.gitignore
+.vscode/
+.idea/
+.env
+.env.local
+
+# Documentation (except required ones)
+*.md
+!README.md
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
 # Misc
 .DS_Store
 *.log
+Thumbs.db

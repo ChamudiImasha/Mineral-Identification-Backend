@@ -1,13 +1,15 @@
 # Railway Deployment Size Optimization
 
 ## Problem
+
 Railway's Docker image export was failing because the image size exceeded limits (likely >2GB).
 
 ## Root Cause - Dependency Sizes
 
 **Original Requirements:**
+
 - `torch` (GPU support): ~800-900MB
-- `torchvision`: ~100-200MB  
+- `torchvision`: ~100-200MB
 - `open-clip-torch`: ~100-200MB
 - `opencv-python`: ~100MB
 - `scipy`, `matplotlib`, `numpy`, etc.: ~200-300MB
@@ -23,7 +25,7 @@ Railway's Docker image export was failing because the image size exceeded limits
    - `torchvision==0.15.0+cpu`: ~50-100MB (vs 200MB GPU version)
    - **Savings: ~500-700MB**
 
-2. **Headless OpenCV** 
+2. **Headless OpenCV**
    - `opencv-python-headless`: ~30-40MB (vs 100MB full version)
    - **Savings: ~60MB**
 
@@ -38,13 +40,13 @@ Railway's Docker image export was failing because the image size exceeded limits
 
 ### Expected Sizes:
 
-| Component | Size |
-|-----------|------|
-| Base Python 3.10-slim | ~150MB |
-| PyTorch CPU | ~300MB |
-| Other dependencies | ~400MB |
-| **Total Image** | **~850MB** ✅ |
-| Model (runtime) | +392MB |
+| Component             | Size          |
+| --------------------- | ------------- |
+| Base Python 3.10-slim | ~150MB        |
+| PyTorch CPU           | ~300MB        |
+| Other dependencies    | ~400MB        |
+| **Total Image**       | **~850MB** ✅ |
+| Model (runtime)       | +392MB        |
 
 ## Deploy Now
 
@@ -67,16 +69,20 @@ git push
 If Railway still fails with size issues, you have 3 options:
 
 ### Option 1: Try Render.com (Recommended)
+
 Render has higher limits and better handles large Python apps:
+
 - Use existing `render.yaml` configuration
 - See [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ### Option 2: Split Model to CDN
+
 - Upload model to AWS S3/Cloudflare R2
 - Download from CDN instead of Google Drive
 - Faster + more reliable
 
 ### Option 3: Use Railway with Persistent Volume
+
 - Set up volume BEFORE first deploy
 - Model persists, no re-download needed
 - See Railway dashboard → Volumes
@@ -91,6 +97,7 @@ docker run -p 8000:8000 -e PORT=8000 mineral-api
 ```
 
 Should see:
+
 ```
 📥 Model not found, downloading from Google Drive...
 ✓ Model downloaded successfully!
