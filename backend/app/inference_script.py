@@ -176,9 +176,9 @@ def run_inference(model, image_tensor):
             probabilities = F.softmax(outputs, dim=1)
             confidence, prediction = torch.max(probabilities, dim=1)
             
-            # Move to CPU and convert to numpy
-            prediction = prediction.cpu().numpy()[0]  # Remove batch dimension
-            confidence = confidence.cpu().numpy()[0]
+            # Move to CPU and convert to numpy (using np.array for CPU build compatibility)
+            prediction = np.array(prediction.cpu())[0]  # Remove batch dimension
+            confidence = np.array(confidence.cpu())[0]
             
         else:
             raise ValueError(f"Unexpected model output shape: {outputs.shape}")
