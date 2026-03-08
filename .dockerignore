@@ -1,5 +1,5 @@
 # Python cache
-__pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
@@ -11,7 +11,6 @@ __pycache__/
 
 # Model files (downloaded at runtime)
 backend/app/saved_models/*.pth
-backend/app/saved_models/best_unet_model.pth
 *.pth
 
 # Data files (not needed in production)
@@ -31,14 +30,28 @@ backend/app/output/
 .env
 .env.local
 
-# Documentation (except required ones)
+# Documentation
 *.md
-!README.md
 
 # Build artifacts
 build/
 dist/
-*.egg-info/
+
+# Test files
+test*.py
+*_test.py
+
+# Config files not needed
+railway.toml
+railway.json
+render.yaml
+nixpacks.toml
+Procfile
+
+# Scripts
+build.sh
+start.sh
+test-docker-build.ps1
 
 # Misc
 .DS_Store

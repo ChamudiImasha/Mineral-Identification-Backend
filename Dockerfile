@@ -8,11 +8,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy entire project
-COPY . .
+# Copy requirements first for better layer caching
+COPY backend/app/requirements.txt /app/requirements.txt
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r backend/app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy the entire backend/app directory
+COPY backend/app /app/backend/app
 
 # Set working directory to app location
 WORKDIR /app/backend/app
