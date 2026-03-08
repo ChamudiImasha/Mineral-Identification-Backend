@@ -276,9 +276,14 @@ def image_to_base64(image):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize model on server startup."""
+    """Initialize model and gatekeeper on server startup."""
     logger.info("🚀 Starting up API server...")
     initialize_model()
+    # Pre-load gatekeeper at startup to avoid first-request delay
+    try:
+        get_gatekeeper()
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to load gatekeeper at startup: {e}")
 
 
 @app.get("/")
@@ -311,7 +316,8 @@ async def health_check():
 async def predict(
     image: UploadFile = File(..., description="Image file to classify"),
     min_area: int = Form(50, description="Minimum region area in pixels"),
-    return_image: bool = Form(True, description="Return annotated images")
+    return_image: bool = Form(False, description="Return annotated images (increases response time)"),
+    use_gatekeeper: bool = Form(False, description="Enable planetary image validation (adds ~2s)")
 ):
     """
     Predict mineral segmentation from uploaded image.
@@ -334,28 +340,32 @@ async def predict(
         original_np = np.array(pil_image)
         original_size = original_np.shape[:2]
         
-        # Stage 1: Planetary Gatekeeper - reject non-planetary images
-        try:
-            gatekeeper = get_gatekeeper()
-            logger.info("🔍 Running planetary gatekeeper check...")
-            gatekeeper_result = gatekeeper.check_image(pil_image, return_scores=True)
-            
-            if not gatekeeper_result["accepted"]:
-                logger.warning(f"❌ Image rejected by gatekeeper: {gatekeeper_result['reason']}")
-                raise HTTPException(
-                    status_code=400,
-                    detail={
-                        "error": "Image rejected: Not a planetary/geological image",
-                        "reason": gatekeeper_result["reason"],
-                        "confidence": gatekeeper_result["confidence"],
-                        "suggestion": "Please upload Mars CRISM satellite imagery or similar planetary geological images"
-                    }
-                )
-            
-            logger.info(f"✅ Gatekeeper passed (confidence: {gatekeeper_result['confidence']:.3f})")
-        except Exception as e:
-            logger.warning(f"⚠️ Gatekeeper check failed, proceeding anyway: {e}")
-            # Continue with inference even if gatekeeper fails
+        # Stage 1: Planetary Gatekeeper - reject non-planetary images (optional)
+        if use_gatekeeper:
+            try:
+                gatekeeper = get_gatekeeper()
+                logger.info("🔍 Running planetary gatekeeper check...")
+                gatekeeper_result = gatekeeper.check_image(pil_image, return_scores=True)
+                
+                if not gatekeeper_result["accepted"]:
+                    logger.warning(f"❌ Image rejected by gatekeeper: {gatekeeper_result['reason']}")
+                    raise HTTPException(
+                        status_code=400,
+                        detail={
+                            "error": "Image rejected: Not a planetary/geological image",
+                            "reason": gatekeeper_result["reason"],
+                            "confidence": gatekeeper_result["confidence"],
+                            "suggestion": "Please upload Mars CRISM satellite imagery or similar planetary geological images"
+                        }
+                    )
+                
+                logger.info(f"✅ Gatekeeper passed (confidence: {gatekeeper_result['confidence']:.3f})")
+            except HTTPException:
+                raise
+            except Exception as e:
+                logger.warning(f"⚠️ Gatekeeper check failed, proceeding anyway: {e}")
+        else:
+            logger.info("⏭️ Skipping gatekeeper check (disabled)")
         
         # Save temporarily
         temp_path = f'temp_upload_{image.filename}'

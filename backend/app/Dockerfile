@@ -7,15 +7,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
-COPY requirements.txt .
+# Copy requirements from project root and install
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all application files
-COPY . .
+# Copy backend application files
+COPY backend/app /app/backend/app
 
-# Expose port
+# Set working directory to app
+WORKDIR /app/backend/app
+
+# Expose port (dynamic from Railway)
 EXPOSE 8000
 
-# Start server
-CMD ["python", "api_server.py"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout=5)"
+
+# Start server using run.py with Gunicorn
+CMD ["python", "run.py"]
