@@ -14,11 +14,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy everything
 COPY . .
 
+# Make start script executable
+RUN chmod +x backend/app/start.sh
+
 # Set working directory
 WORKDIR /app/backend/app
 
 # Expose port
 EXPOSE 8000
 
-# Start server
-CMD ["sh", "-c", "python -m uvicorn api_server:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Start server using script
+CMD ["./start.sh"]

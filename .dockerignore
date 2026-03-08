@@ -48,9 +48,8 @@ render.yaml
 nixpacks.toml
 Procfile
 
-# Scripts
+# Scripts (except backend/app/start.sh)
 build.sh
-start.sh
 test-docker-build.ps1
 
 # Misc
