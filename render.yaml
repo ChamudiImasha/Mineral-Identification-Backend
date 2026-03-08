@@ -4,7 +4,7 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: "cd backend/app && pip install -r requirements_api.txt && python download_model.py"
+    buildCommand: "cd backend/app && pip install -r requirements.txt && python download_model.py"
     startCommand: "cd backend/app && uvicorn api_server:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION

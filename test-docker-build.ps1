@@ -14,7 +14,7 @@ Write-Host "✓ Docker found" -ForegroundColor Green
 # Check required files
 $requiredFiles = @(
     "Dockerfile",
-    "backend/app/requirements_api.txt",
+    "backend/app/requirements.txt",
     "backend/app/api_server.py"
 )
 
