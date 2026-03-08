@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Startup script for Railway deployment
+Production startup script for Railway Hobby Plan deployment
 Reads PORT from environment and starts Gunicorn with Uvicorn workers
+Optimized for Railway Hobby plan resources
 """
 import os
 import sys
@@ -9,9 +10,11 @@ from multiprocessing import cpu_count
 
 def get_workers():
     """Calculate number of workers based on available CPUs."""
-    # For ML workloads, use fewer workers to avoid memory issues
-    # Formula: min(2, cpu_count)
-    return min(2, cpu_count())
+    # Railway Hobby plan has better resources
+    # Use (2 * cpu_count) + 1 for optimal throughput
+    # But cap at 4 to leave memory for model inference
+    workers = (2 * cpu_count()) + 1
+    return min(workers, 4)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
@@ -40,15 +43,18 @@ if __name__ == "__main__":
         'bind': f'0.0.0.0:{port}',
         'workers': workers,
         'worker_class': 'uvicorn.workers.UvicornWorker',
-        'timeout': 300,  # 5 minutes for ML inference
+        'timeout': 180,  # 3 minutes - sufficient for inference with hobby plan resources
         'graceful_timeout': 30,
         'keepalive': 5,
-        'max_requests': 100,  # Restart workers after 100 requests to prevent memory leaks
-        'max_requests_jitter': 10,
+        'max_requests': 500,  # More requests before restart (hobby plan handles this)
+        'max_requests_jitter': 50,
+        'worker_connections': 1000,
         'preload_app': False,  # Don't preload to avoid model loading issues
         'accesslog': '-',
         'errorlog': '-',
-        'loglevel': 'info'
+        'loglevel': 'info',
+        'capture_output': True,
+        'enable_stdio_inheritance': True
     }
     
     # Import app

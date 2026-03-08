@@ -1,55 +1,89 @@
-# Python cache
-**/__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-*.egg
-*.egg-info/
-.pytest_cache/
+# ============================================
+# Production .dockerignore for Railway Deployment
+# Optimized for Railway Hobby Plan
+# ============================================
 
-# Model files (downloaded at runtime)
+# Python cache and build artifacts
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.Python
+**/*.so
+**/*.egg
+**/*.egg-info/
+.pytest_cache/
+*.coverage
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Model files (downloaded at runtime via download_model.py)
 backend/app/saved_models/*.pth
 *.pth
 
-# Data files (not needed in production)
-backend/app/data/raw/
-backend/app/data/processed/
-backend/app/output/
+# Large data files (not needed in Docker image)
+backend/app/data/raw/**
+backend/app/data/processed/**
+backend/app/output/**
 *.mat
 *.h5
 *.hdf5
 
-# Development
+# Version control
 .git/
 .github/
 .gitignore
+.gitattributes
+
+# Development environment
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 .env
 .env.local
+.env.*.local
 
-# Documentation
+# Documentation (keep README files in backend/app)
 *.md
-!backend/app/*.md
+!backend/app/README.md
+!backend/app/TWO_STAGE_PIPELINE_README.md
 
 # Build artifacts
 build/
 dist/
+*.egg-info/
 
 # Test files
 test_*.py
 *_test.py
 backend/app/test_*.py
 backend/app/*_test.py
+backend/app/example_usage.py
 
-# Config files not needed
+# Alternative deployment configs (not needed for Railway)
 railway.json
 render.yaml
 nixpacks.toml
+docker-entrypoint.sh
+start.sh
+build.sh
+test-docker-build.ps1
+backend/app/build.sh
+backend/app/start.sh
 
-# Misc
+# OS specific
 .DS_Store
-*.log
 Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

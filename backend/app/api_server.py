@@ -188,9 +188,9 @@ def get_gatekeeper():
     """Load gatekeeper lazily on first use."""
     global GATEKEEPER
     if GATEKEEPER is None:
-        logger.info("🔄 Loading planetary gatekeeper (first use)...")
-        GATEKEEPER = load_gatekeeper(threshold=0.45)
-        logger.info("✅ Planetary gatekeeper loaded (threshold=0.45)")
+        logger.info("🔄 Loading planetary gatekeeper...")
+        GATEKEEPER = load_gatekeeper(threshold=0.40)  # Slightly more lenient for production
+        logger.info("✅ Planetary gatekeeper loaded (threshold=0.40)")
     return GATEKEEPER
 
 
@@ -316,8 +316,8 @@ async def health_check():
 async def predict(
     image: UploadFile = File(..., description="Image file to classify"),
     min_area: int = Form(50, description="Minimum region area in pixels"),
-    return_image: bool = Form(False, description="Return annotated images (increases response time)"),
-    use_gatekeeper: bool = Form(False, description="Enable planetary image validation (adds ~2s)")
+    return_image: bool = Form(True, description="Return annotated images with visualization"),
+    use_gatekeeper: bool = Form(True, description="Enable planetary image validation for quality assurance")
 ):
     """
     Predict mineral segmentation from uploaded image.
