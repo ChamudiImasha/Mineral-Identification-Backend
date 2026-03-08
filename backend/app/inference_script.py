@@ -145,7 +145,8 @@ def preprocess_image(image_path, target_size=(256, 256)):
         raise ValueError(f"Unsupported image format: {image_path}")
     
     # Convert to PyTorch tensor (C, H, W)
-    image_tensor = torch.from_numpy(image_np).permute(2, 0, 1).unsqueeze(0).float()
+    # Use torch.tensor() instead of from_numpy() for better compatibility with CPU builds
+    image_tensor = torch.tensor(image_np, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0)
     image_tensor = image_tensor.to(config.DEVICE)
     
     logger.info(f"   Preprocessed tensor shape: {image_tensor.shape}")

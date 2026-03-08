@@ -296,9 +296,9 @@ class CRISMDataset(Dataset):
                 if band_data.max() > band_data.min():
                     image[:, :, band] = (band_data - band_data.min()) / (band_data.max() - band_data.min())
         
-        # Convert to tensors
-        image_tensor = torch.from_numpy(image).float().permute(2, 0, 1)  # (H, W, C) -> (C, H, W)
-        mask_tensor = torch.from_numpy(mask).long()  # (H, W)
+        # Convert to tensors - Use torch.tensor() for better CPU compatibility
+        image_tensor = torch.tensor(image, dtype=torch.float32).permute(2, 0, 1)  # (H, W, C) -> (C, H, W)
+        mask_tensor = torch.tensor(mask, dtype=torch.long)  # (H, W)
         
         # Resize to target size for consistent batching (inspired by CRISM ML approaches)
         target_h, target_w = self.target_size
