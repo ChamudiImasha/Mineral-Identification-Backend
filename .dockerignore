@@ -1,7 +1,32 @@
 # Ignore large model files during build
 backend/app/saved_models/*.pth
 *.pth
+
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+
+# Development
 .git/
+.gitignore
 .vscode/
+.idea/
+*.md
+!README.md
+
+# Data files
+backend/app/data/
+backend/app/output/
+*.mat
+*.h5
+*.hdf5
+
+# Misc
+.DS_Store
+*.log

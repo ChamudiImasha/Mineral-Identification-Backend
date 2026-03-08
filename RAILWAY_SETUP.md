@@ -3,6 +3,7 @@
 ## Current Setup (Working)
 
 The app will:
+
 1. Build without the model (fast, no Docker export errors)
 2. Download model on **first startup** (takes ~30 seconds)
 3. Model stored in container (re-downloads if container restarts)
@@ -16,6 +17,7 @@ git push
 ```
 
 Railway will:
+
 - ✅ Build quickly (no model download)
 - ✅ Start the app
 - ✅ Download model on first request (watch logs)
@@ -57,15 +59,19 @@ Now the model persists across deployments! ✨
 ## 🔍 Troubleshooting
 
 ### Build Fails at "exporting docker image"
+
 - Fixed! Model now downloads at runtime, not build time
 
 ### App takes long to start
+
 - Normal! First startup downloads 392MB model (~30 seconds)
 - Subsequent restarts reuse cached model
 
 ### Health check fails
+
 - Health check timeout set to 300 seconds (5 min)
 - Allows time for model download on first start
 
 ### Model re-downloads every deploy
+
 - Add persistent volume (see above) to cache the model
